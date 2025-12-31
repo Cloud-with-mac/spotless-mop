@@ -128,11 +128,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Email Configuration (for contact form)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # or your email provider
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-email@gmail.com'  # Change this
-EMAIL_HOST_PASSWORD = 'your-app-password'  # Change this
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER', '')
 
 # Time zone for UK
 TIME_ZONE = 'Europe/London'
