@@ -1004,6 +1004,64 @@
     </style>
 </head>
 <body>
+    {% if messages %}
+        <div class="top-notification" style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 99999;
+            padding: 1rem;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideDown 0.5s ease;
+        ">
+            {% for message in messages %}
+                <span style="display: inline-block;">
+                    ✓ {{ message }}
+                </span>
+            {% endfor %}
+        </div>
+
+        <style>
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+        }
+        </style>
+
+        <script>
+        // Auto-hide notification after 5 seconds
+        setTimeout(function() {
+            const notification = document.querySelector('.top-notification');
+            if (notification) {
+                notification.style.animation = 'slideUp 0.5s ease';
+                setTimeout(() => notification.remove(), 500);
+            }
+        }, 5000);
+        </script>
+    {% endif %}
     <!-- Navigation -->
     <nav id="nav">
         <div class="nav-container">
@@ -1252,25 +1310,6 @@
                     </li>
                 </ul>
             </div>
-            {% if messages %}
-                <div style="max-width: 800px; margin: 0 auto 2rem auto; padding: 0 1rem;">
-                    {% for message in messages %}
-                    <div style="
-                        background: #d4edda;
-                        border: 2px solid #28a745;
-                        border-radius: 12px;
-                        padding: 1.5rem;
-                        color: #155724;
-                        text-align: center;
-                        font-size: 1.1rem;
-                        font-weight: 600;
-                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                    ">
-                        ✓ {{ message }}
-                    </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
             <form class="contact-form" id="contactForm" method="POST" >
                 {% csrf_token %}
                 <div class="form-group">
