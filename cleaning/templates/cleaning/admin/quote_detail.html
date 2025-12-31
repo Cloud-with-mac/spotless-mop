@@ -1,0 +1,91 @@
+{% extends 'cleaning/admin/base.html' %}
+
+{% block title %}Quote Request Detail{% endblock %}
+{% block page_title %}Quote Request #{{ quote.id }}{% endblock %}
+
+{% block content %}
+<style>
+    .detail-card {
+        background: #F8FAFB;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+    }
+    .detail-row {
+        display: flex;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #E8ECF0;
+    }
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+    .detail-label {
+        font-weight: 600;
+        color: #0A2540;
+        min-width: 150px;
+    }
+    .detail-value {
+        color: #6B7C93;
+    }
+</style>
+
+<div style="margin-bottom: 2rem;">
+    <a href="{% url 'admin_quotes_list' %}" class="btn btn-secondary btn-small">← Back to List</a>
+</div>
+
+<div class="detail-card">
+    <h3 style="margin-bottom: 1rem; color: #0A2540;">Customer Information</h3>
+    <div class="detail-row">
+        <div class="detail-label">Name:</div>
+        <div class="detail-value">{{ quote.name }}</div>
+    </div>
+    <div class="detail-row">
+        <div class="detail-label">Email:</div>
+        <div class="detail-value"><a href="mailto:{{ quote.email }}">{{ quote.email }}</a></div>
+    </div>
+    <div class="detail-row">
+        <div class="detail-label">Phone:</div>
+        <div class="detail-value">{{ quote.phone|default:"-" }}</div>
+    </div>
+</div>
+
+<div class="detail-card">
+    <h3 style="margin-bottom: 1rem; color: #0A2540;">Service Details</h3>
+    <div class="detail-row">
+        <div class="detail-label">Service Requested:</div>
+        <div class="detail-value">{{ quote.get_service_display }}</div>
+    </div>
+    <div class="detail-row">
+        <div class="detail-label">Message:</div>
+        <div class="detail-value">{{ quote.message|default:"-" }}</div>
+    </div>
+    <div class="detail-row">
+        <div class="detail-label">Request Date:</div>
+        <div class="detail-value">{{ quote.created_at|date:"F d, Y h:i A" }}</div>
+    </div>
+    <div class="detail-row">
+        <div class="detail-label">Last Updated:</div>
+        <div class="detail-value">{{ quote.updated_at|date:"F d, Y h:i A" }}</div>
+    </div>
+</div>
+
+<div class="detail-card">
+    <h3 style="margin-bottom: 1rem; color: #0A2540;">Update Status</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Current Status: <span class="badge badge-{{ quote.status }}">{{ quote.get_status_display }}</span></label>
+            <select name="status" class="form-control">
+                {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if quote.status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Status</button>
+    </form>
+</div>
+
+<div style="margin-top: 2rem;">
+    <a href="{% url 'admin_quote_delete' quote.pk %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this quote request?')">Delete Quote</a>
+</div>
+{% endblock %}

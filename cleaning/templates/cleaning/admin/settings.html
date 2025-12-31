@@ -1,0 +1,58 @@
+{% extends 'cleaning/admin/base.html' %}
+
+{% block title %}Site Settings{% endblock %}
+{% block page_title %}Site Settings{% endblock %}
+
+{% block content %}
+<form method="POST" style="max-width: 800px;">
+    {% csrf_token %}
+    
+    <h3 style="color: #0A2540; margin-bottom: 1.5rem;">Contact Information</h3>
+    
+    <div class="form-group">
+        <label>Phone Number *</label>
+        <input type="text" name="phone" value="{{ site_settings.phone }}" required>
+    </div>
+
+    <div class="form-group">
+        <label>Email Address *</label>
+        <input type="email" name="email" value="{{ site_settings.email }}" required>
+    </div>
+
+    <div class="form-group">
+        <label>Address/Coverage Area *</label>
+        <input type="text" name="address" value="{{ site_settings.address }}" required>
+    </div>
+
+    <div class="form-group">
+        <label>Business Hours *</label>
+        <textarea name="hours" rows="3" required>{{ site_settings.hours }}</textarea>
+        <small style="color: #6B7C93;">Each line will be displayed on a new line on the website</small>
+    </div>
+
+    <h3 style="color: #0A2540; margin: 2rem 0 1.5rem;">Social Media Links</h3>
+    <p style="color: #6B7C93; margin-bottom: 1.5rem;">Leave blank if you don't want to display that social media link</p>
+
+    <div class="form-group">
+        <label>Facebook URL</label>
+        <input type="url" name="facebook_url" value="{{ site_settings.facebook_url }}" placeholder="https://facebook.com/yourpage">
+    </div>
+
+    <div class="form-group">
+        <label>Twitter URL</label>
+        <input type="url" name="twitter_url" value="{{ site_settings.twitter_url }}" placeholder="https://twitter.com/yourhandle">
+    </div>
+
+    <div class="form-group">
+        <label>Instagram URL</label>
+        <input type="url" name="instagram_url" value="{{ site_settings.instagram_url }}" placeholder="https://instagram.com/yourhandle">
+    </div>
+
+    <div class="form-group">
+        <label>LinkedIn URL</label>
+        <input type="url" name="linkedin_url" value="{{ site_settings.linkedin_url }}" placeholder="https://linkedin.com/company/yourcompany">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Settings</button>
+</form>
+{% endblock %}

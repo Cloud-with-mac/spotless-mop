@@ -1,0 +1,101 @@
+{% extends 'cleaning/admin/base.html' %}
+
+{% block title %}Quote Requests{% endblock %}
+{% block page_title %}Quote Requests{% endblock %}
+
+{% block content %}
+<style>
+    .filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    .filters select,
+    .filters input {
+        padding: 0.5rem;
+        border: 2px solid #E8ECF0;
+        border-radius: 8px;
+    }
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+</style>
+
+<div class="filters">
+    <form method="GET" style="display: contents;">
+        <select name="status" onchange="this.form.submit()">
+            <option value="">All Status</option>
+            {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+
+        <select name="service" onchange="this.form.submit()">
+            <option value="">All Services</option>
+            {% for value, label in service_choices %}
+                <option value="{{ value }}" {% if service_filter == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="text" name="search" placeholder="Search name, email, phone..." value="{{ search }}">
+        <button type="submit" class="btn btn-primary btn-small">Search</button>
+        {% if status_filter or service_filter or search %}
+            <a href="{% url 'admin_quotes_list' %}" class="btn btn-secondary btn-small">Clear Filters</a>
+        {% endif %}
+    </form>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Service</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for quote in page_obj %}
+        <tr>
+            <td>{{ quote.created_at|date:"M d, Y" }}</td>
+            <td>{{ quote.name }}</td>
+            <td>{{ quote.email }}</td>
+            <td>{{ quote.phone|default:"-" }}</td>
+            <td>{{ quote.get_service_display }}</td>
+            <td><span class="badge badge-{{ quote.status }}">{{ quote.get_status_display }}</span></td>
+            <td>
+                <div class="action-buttons">
+                    <a href="{% url 'admin_quote_detail' quote.pk %}" class="btn btn-secondary btn-small">View</a>
+                    <a href="{% url 'admin_quote_delete' quote.pk %}" class="btn btn-danger btn-small">Delete</a>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" style="text-align: center; padding: 2rem; color: #6B7C93;">No quote requests found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if page_obj.has_other_pages %}
+<div style="margin-top: 2rem; text-align: center;">
+    {% if page_obj.has_previous %}
+        <a href="?page=1" class="btn btn-secondary btn-small">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary btn-small">Previous</a>
+    {% endif %}
+    
+    <span style="margin: 0 1rem;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary btn-small">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-secondary btn-small">Last</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

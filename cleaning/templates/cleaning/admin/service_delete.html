@@ -1,0 +1,21 @@
+
+{% extends 'cleaning/admin/base.html' %}
+
+{% block title %}Delete Service{% endblock %}
+{% block page_title %}Delete Service{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; text-align: center;">
+    <div style="background: #FFF3CD; padding: 2rem; border-radius: 15px; margin-bottom: 2rem;">
+        <h2 style="color: #856404; margin-bottom: 1rem;">⚠️ Confirm Deletion</h2>
+        <p style="color: #856404;">Are you sure you want to delete the service <strong>{{ service.name }}</strong>?</p>
+        <p style="color: #856404; margin-top: 1rem;">This action cannot be undone.</p>
+    </div>
+
+    <form method="POST" style="display: inline-block; margin-right: 1rem;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    </form>
+    <a href="{% url 'admin_services_list' %}" class="btn btn-secondary">Cancel</a>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'cleaning/admin/base.html' %}
+
+{% block title %}Testimonials{% endblock %}
+{% block page_title %}Testimonials{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <a href="{% url 'admin_testimonial_create' %}" class="btn btn-primary">⭐ Add New Testimonial</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Rating</th>
+            <th>Review</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for testimonial in testimonials %}
+        <tr>
+            <td>{{ testimonial.name }}</td>
+            <td>{{ testimonial.location }}</td>
+            <td>{{ testimonial.get_stars }}</td>
+            <td>{{ testimonial.text|truncatewords:15 }}</td>
+            <td>{{ testimonial.created_at|date:"M d, Y" }}</td>
+            <td>
+                {% if testimonial.is_active %}
+                    <span class="badge badge-active">Active</span>
+                {% else %}
+                    <span class="badge badge-inactive">Inactive</span>
+                {% endif %}
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <a href="{% url 'admin_testimonial_edit' testimonial.pk %}" class="btn btn-secondary btn-small">Edit</a>
+                    <a href="{% url 'admin_testimonial_delete' testimonial.pk %}" class="btn btn-danger btn-small">Delete</a>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" style="text-align: center; padding: 2rem; color: #6B7C93;">No testimonials yet. Add your first review!</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

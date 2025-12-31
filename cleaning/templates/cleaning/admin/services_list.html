@@ -1,0 +1,50 @@
+{% extends 'cleaning/admin/base.html' %}
+
+{% block title %}Services{% endblock %}
+{% block page_title %}Services{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <a href="{% url 'admin_service_create' %}" class="btn btn-primary">➕ Add New Service</a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Order</th>
+            <th>Icon</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for service in services %}
+        <tr>
+            <td>{{ service.order }}</td>
+            <td style="font-size: 2rem;">{{ service.icon }}</td>
+            <td>{{ service.name }}</td>
+            <td>{{ service.price }}</td>
+            <td>
+                {% if service.is_active %}
+                    <span class="badge badge-active">Active</span>
+                {% else %}
+                    <span class="badge badge-inactive">Inactive</span>
+                {% endif %}
+            </td>
+            <td>
+                <div class="action-buttons">
+                    <a href="{% url 'admin_service_edit' service.pk %}" class="btn btn-secondary btn-small">Edit</a>
+                    <a href="{% url 'admin_service_delete' service.pk %}" class="btn btn-danger btn-small">Delete</a>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" style="text-align: center; padding: 2rem; color: #6B7C93;">No services yet. Add your first service!</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

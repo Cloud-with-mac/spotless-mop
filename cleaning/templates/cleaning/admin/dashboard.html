@@ -1,0 +1,176 @@
+{% extends 'cleaning/admin/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #0A2540, #0D3B66);
+        padding: 1.5rem;
+        border-radius: 15px;
+        color: white;
+    }
+
+    .stat-card.green {
+        background: linear-gradient(135deg, #00D4AA, #00B894);
+    }
+
+    .stat-card.blue {
+        background: linear-gradient(135deg, #4A90E2, #357ABD);
+    }
+
+    .stat-card.purple {
+        background: linear-gradient(135deg, #9B59B6, #8E44AD);
+    }
+
+    .stat-card h3 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 800;
+    }
+
+    .stat-card p {
+        opacity: 0.9;
+        font-size: 0.9rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: #0A2540;
+    }
+
+    .recent-quotes {
+        margin-top: 2rem;
+    }
+
+    .quote-item {
+        padding: 1rem;
+        border-bottom: 1px solid #E8ECF0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .quote-item:last-child {
+        border-bottom: none;
+    }
+
+    .quote-info h4 {
+        color: #0A2540;
+        margin-bottom: 0.25rem;
+    }
+
+    .quote-info p {
+        color: #6B7C93;
+        font-size: 0.875rem;
+    }
+
+    .chart-container {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: #F8FAFB;
+        border-radius: 10px;
+    }
+
+    .service-stat {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem 0;
+        border-bottom: 1px solid #E8ECF0;
+    }
+
+    .service-stat:last-child {
+        border-bottom: none;
+    }
+
+    .service-name {
+        font-weight: 600;
+        color: #0A2540;
+    }
+
+    .service-count {
+        background: #00D4AA;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+</style>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>{{ total_quotes }}</h3>
+        <p>Total Quote Requests</p>
+    </div>
+    <div class="stat-card green">
+        <h3>{{ new_quotes }}</h3>
+        <p>New Quotes</p>
+    </div>
+    <div class="stat-card blue">
+        <h3>{{ active_services }}</h3>
+        <p>Active Services</p>
+    </div>
+    <div class="stat-card purple">
+        <h3>{{ recent_quotes }}</h3>
+        <p>This Week</p>
+    </div>
+</div>
+
+<!-- Recent Quotes -->
+<div class="recent-quotes">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 class="section-title" style="margin: 0;">Recent Quote Requests</h2>
+        <a href="{% url 'admin_quotes_list' %}" class="btn btn-primary btn-small">View All</a>
+    </div>
+
+    {% if latest_quotes %}
+        {% for quote in latest_quotes %}
+        <div class="quote-item">
+            <div class="quote-info">
+                <h4>{{ quote.name }}</h4>
+                <p>{{ quote.email }} | {{ quote.get_service_display }} | {{ quote.created_at|date:"M d, Y" }}</p>
+            </div>
+            <div>
+                <span class="badge badge-{{ quote.status }}">{{ quote.get_status_display }}</span>
+                <a href="{% url 'admin_quote_detail' quote.pk %}" class="btn btn-secondary btn-small" style="margin-left: 0.5rem;">View</a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="color: #6B7C93; text-align: center; padding: 2rem;">No quote requests yet.</p>
+    {% endif %}
+</div>
+
+<!-- Service Statistics -->
+<div class="chart-container">
+    <h2 class="section-title">Quotes by Service Type</h2>
+    {% if quotes_by_service %}
+        {% for item in quotes_by_service %}
+        <div class="service-stat">
+            <span class="service-name">{{ item.service|title }}</span>
+            <span class="service-count">{{ item.count }} request{{ item.count|pluralize }}</span>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="color: #6B7C93; text-align: center; padding: 1rem;">No data available yet.</p>
+    {% endif %}
+</div>
+
+<!-- Quick Actions -->
+<div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+    <a href="{% url 'admin_service_create' %}" class="btn btn-primary">➕ Add New Service</a>
+    <a href="{% url 'admin_testimonial_create' %}" class="btn btn-primary">⭐ Add Testimonial</a>
+    <a href="{% url 'admin_settings' %}" class="btn btn-secondary">⚙️ Manage Settings</a>
+</div>
+{% endblock %}
